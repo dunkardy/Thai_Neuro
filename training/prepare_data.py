@@ -18,10 +18,12 @@ TRAIN_RATIO = 0.9
 PHONE_PATTERN = re.compile(r"0\d{1,2}[-\s]?\d{3}[-\s]?\d{4}")
 EMAIL_PATTERN = re.compile(r"[\w\.-]+@[\w\.-]+\.\w+")
 URL_PATTERN = re.compile(r"https?://\S+")
+HTML_TAG_PATTERN = re.compile(r"<[^>]+>")
 
 
 def clean_text(text: str) -> str:
-    """Remove PII and normalize whitespace."""
+    """Remove PII, HTML tags, and normalize whitespace."""
+    text = HTML_TAG_PATTERN.sub("", text)
     text = PHONE_PATTERN.sub("[เบอร์โทร]", text)
     text = EMAIL_PATTERN.sub("[อีเมล]", text)
     text = URL_PATTERN.sub("[ลิงก์]", text)

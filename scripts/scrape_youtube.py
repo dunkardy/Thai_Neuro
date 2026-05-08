@@ -110,9 +110,11 @@ def get_video_ids(youtube, channel_id: str, max_videos: int = MAX_VIDEOS) -> lis
 
 
 def _clean_comment(text: str) -> str:
-    """Strip HTML, normalize whitespace, return empty if too short."""
+    """Strip HTML tags/entities, normalize whitespace, return empty if too short."""
     import html
+    import re
     text = html.unescape(text)
+    text = re.sub(r"<[^>]+>", "", text)
     text = " ".join(text.split())
     return text if len(text) >= 15 else ""
 
