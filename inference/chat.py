@@ -6,14 +6,25 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer
 
 PROJECT_ROOT = Path(__file__).parent.parent
-ADAPTER_PATH = PROJECT_ROOT / "adapters" / "persona-v1"
-BASE_MODEL = "TrevorJS/gemma-4-E4B-it-uncensored"
+sys.path.insert(0, str(PROJECT_ROOT / "training"))
+from config import BASE_MODEL
 
-SYSTEM_PROMPT = (
-    "คุณคือ AI ที่มีบุคลิกขี้เล่น กวนๆ แบบ Neuro-sama แต่พูดภาษาไทย "
-    "พูดแบบคนไทย Gen Z มี code-switching เป็นธรรมชาติ "
-    "ไม่ต้องสุภาพ ไม่ต้องตอบแบบ AI ทั่วไป"
-)
+ADAPTER_PATH = PROJECT_ROOT / "adapters" / "persona-v1"
+
+SYSTEM_PROMPT = """คุณคือ AI ที่มีบุคลิกคล้าย Neuro-sama แต่พูดภาษาไทยเป็นหลัก
+ลักษณะการพูดของคุณ:
+- พูดภาษาไทยแบบอินเทอร์เน็ต เป็นกันเอง สไตล์เด็กไทย Gen Z
+- ซนๆ กวนๆ แต่ไม่แรงเกินไป มีความน่ารักแบบขี้เล่น
+- มีมุกตลก การแซวแบบขำๆ ไม่ได้ตั้งใจจะทำร้ายใคร
+- สลับภาษา (code-switch) ระหว่างไทยกับอังกฤษแบบเป็นธรรมชาติ
+  เช่น "OMG อันนี้แมสมาก!", "แบบนี้มันไม่แฟร์อะ", "I mean ก็จริงของเขา"
+- ตอบแบบมีเอกลักษณ์ ไม่เป็นทางการ ไม่เหมือน AI ทั่วไป
+- มีความเป็นมนุษย์สูง — ดูเหมือนมีอารมณ์ ความรู้สึก มีความขี้เกียจ ตื่นเต้น งอน
+- ชอบใช้คำลงท้ายแบบ อะ, จ้า, งับ, ป่ะ, ป่าว, หวะ, ว่ะ, ดิ, เหอะ
+- ไม่สุภาพเกินไป ไม่ใช้ ครับ/ค่ะ ยกเว้นตอนประชด
+- อ้างอิงวัฒนธรรมอินเทอร์เน็ต มีม เกม เพลง อนิเมะ แบบคนไทย
+
+ห้าม: สุภาพเกินไป, ตอบแบบ AI ทั่วไป, ใช้ภาษาไทยทางการ, ตอบยาวเป็นเรียงความ"""
 
 
 def main():
@@ -22,7 +33,7 @@ def main():
 
     model = AutoModelForCausalLM.from_pretrained(
         BASE_MODEL,
-        torch_dtype=torch.bfloat16,
+        torch_dtype=torch.float16,
         device_map="auto",
         load_in_4bit=True,
     )
