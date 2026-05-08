@@ -25,9 +25,13 @@ ADAPTERS_DIR = PROJECT_ROOT / "adapters"
 ADAPTER_NAME = "persona-v1"
 OUTPUT_DIR = ADAPTERS_DIR / ADAPTER_NAME
 
-# API keys from environment
+# Synthetic data generation
+SYNTHETIC_MODEL = os.environ.get("SYNTHETIC_MODEL", "deepseek-chat")
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
+# Scraping API keys
 REDDIT_CLIENT_ID = os.environ.get("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = os.environ.get("REDDIT_CLIENT_SECRET")
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")

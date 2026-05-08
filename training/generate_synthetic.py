@@ -1,10 +1,14 @@
-"""Generate persona-consistent Thai conversations via Claude/GPT-4o API."""
+"""Generate persona-consistent Thai conversations via DeepSeek API."""
 import json
 import os
 import time
 from pathlib import Path
 
-from anthropic import Anthropic
+from openai import OpenAI
+
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+from config import SYNTHETIC_MODEL
 
 PROJECT_ROOT = Path(__file__).parent.parent
 OUTPUT_DIR = PROJECT_ROOT / "data" / "synthetic"
@@ -40,7 +44,7 @@ SCENARIOS = [
 
 
 def generate_conversation(
-    client: Anthropic,
+    client: OpenAI,
     scenario: str,
     num_turns: int = 4,
 ) -> dict | None:
@@ -57,13 +61,18 @@ def generate_conversation(
 Assistant ต้องตอบแบบมีเอกลักษณ์ตามบุคลิก ไม่ใช่ AI ทั่วไป"""
 
     try:
-        resp = client.messages.create(
-            model="claude-sonnet-4-6",
+        resp = client.chat.completions.create(
+            model=SYNTHETIC_MODEL,
             max_tokens=2048,
-            system=PERSONA_SYSTEM,
-            messages=[{"role": "user", "content": prompt}],
+            temperature=0.9,
+            messages=[
+                {"role": "system", "content": PERSONA_SYSTEM},
+                {"role": "user", "content": prompt},
+            ],
         )
-        content = resp.content[0].text
+        content = resp.choices[0].message.content
+        if not content:
+            return None
         start = content.find("[")
         end = content.rfind("]") + 1
         if start == -1 or end == 0:
@@ -75,32 +84,51 @@ Assistant ต้องตอบแบบมีเอกลักษณ์ตา�
         return None
 
 
+def _preview(content: str, max_len: int = 80) -> str:
+    """First line or truncated snippet of an assistant reply."""
+    for line in content.splitlines():
+        stripped = line.strip()
+        if stripped:
+            return stripped[:max_len] + ("..." if len(stripped) > max_len else "")
+    return "(empty)"
+
+
 def main():
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    api_key = os.environ.get("DEEPSEEK_API_KEY")
     if not api_key:
-        print("ANTHROPIC_API_KEY not set")
+        print("DEEPSEEK_API_KEY not set")
         return
 
-    client = Anthropic(api_key=api_key)
+    client = OpenAI(
+        api_key=api_key,
+        base_url="https://api.deepseek.com",
+    )
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    all_conversations = []
-    num_per_scenario = 50
-
-    for scenario in SCENARIOS:
-        print(f"Generating {scenario}...")
-        for i in range(num_per_scenario):
-            conv = generate_conversation(client, scenario, num_turns=4)
-            if conv:
-                all_conversations.append(conv)
-            time.sleep(0.3)
-        print(f"  Generated {num_per_scenario} for {scenario}")
-
     out_path = OUTPUT_DIR / "synthetic_conversations.jsonl"
+    num_per_scenario = 50
+    total = 0
+
+    print(f"Using model: {SYNTHETIC_MODEL}")
     with open(out_path, "w", encoding="utf-8") as f:
-        for conv in all_conversations:
-            f.write(json.dumps(conv, ensure_ascii=False) + "\n")
-    print(f"Saved {len(all_conversations)} conversations to {out_path}")
+        for scenario in SCENARIOS:
+            print(f"\n[{scenario}]")
+            for i in range(num_per_scenario):
+                conv = generate_conversation(client, scenario, num_turns=4)
+                if conv:
+                    first_assistant = next(
+                        (m["content"] for m in conv["messages"] if m["role"] == "assistant"), ""
+                    )
+                    preview = _preview(first_assistant)
+                    print(f"  [{i + 1}/{num_per_scenario}] {preview}")
+                    f.write(json.dumps(conv, ensure_ascii=False) + "\n")
+                    f.flush()
+                    total += 1
+                else:
+                    print(f"  [{i + 1}/{num_per_scenario}] FAILED")
+                time.sleep(0.3)
+
+    print(f"\nSaved {total} conversations to {out_path}")
 
 
 if __name__ == "__main__":
