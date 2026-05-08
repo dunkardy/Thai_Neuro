@@ -41,15 +41,28 @@ def deduplicate(conversations: list[dict]) -> list[dict]:
     return unique
 
 
-def is_valid(conv: dict) -> bool:
-    """Filter low-quality conversations."""
-    for msg in conv.get("messages", []):
+def _preview(text: str, max_len: int = 60) -> str:
+    """Safe console preview of a message."""
+    preview = text[:max_len] + ("..." if len(text) > max_len else "")
+    try:
+        preview.encode("utf-8")
+    except UnicodeEncodeError:
+        preview = preview.encode("ascii", errors="replace").decode("ascii")
+    return preview
+
+
+def is_valid(conv: dict) -> tuple[bool, str]:
+    """Filter low-quality conversations. Returns (valid, reason)."""
+    msgs = conv.get("messages", [])
+    if len(msgs) < 2:
+        return False, "too few messages"
+    for msg in msgs:
         text = msg.get("content", "")
         if len(text) < MIN_MESSAGE_LENGTH:
-            return False
+            return False, f"short ({len(text)}c): {_preview(text)}"
         if len(text) > MAX_MESSAGE_LENGTH:
-            return False
-    return len(conv["messages"]) >= 2
+            return False, f"long ({len(text)}c): {_preview(text)}"
+    return True, ""
 
 
 def load_jsonl(path: Path) -> list[dict]:
@@ -96,8 +109,21 @@ def main():
         for msg in conv["messages"]:
             msg["content"] = clean_text(msg["content"])
 
-    # Filter and deduplicate
-    valid = [c for c in all_conversations if is_valid(c)]
+    # Filter with per-item reasons
+    valid = []
+    reason_counts: dict[str, int] = {}
+    for conv in all_conversations:
+        ok, reason = is_valid(conv)
+        if ok:
+            valid.append(conv)
+        else:
+            reason_counts[reason] = reason_counts.get(reason, 0) + 1
+            if reason_counts[reason] <= 3:  # show first 3 of each failure type
+                print(f"  FILTERED: {reason}")
+    if reason_counts:
+        print(f"Filtered out {len(all_conversations) - len(valid)} conversations:")
+        for reason, count in sorted(reason_counts.items(), key=lambda x: -x[1]):
+            print(f"  {count:4d} - {reason}")
     print(f"After filtering: {len(valid)}")
     unique = deduplicate(valid)
     print(f"After deduplication: {len(unique)}")
@@ -116,6 +142,7 @@ def main():
         with open(path, "w", encoding="utf-8") as f:
             for conv in data:
                 f.write(json.dumps(conv, ensure_ascii=False) + "\n")
+            f.flush()
 
     print(f"Train: {len(train)} | Val: {len(val)}")
     print(f"Saved to {OUTPUT_DIR}")
