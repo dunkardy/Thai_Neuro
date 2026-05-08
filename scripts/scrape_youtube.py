@@ -7,7 +7,51 @@ from pathlib import Path
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-THAI_CHANNEL_IDS = []
+THAI_CHANNEL_IDS = [
+    # Gaming
+    "UCAcYshki68X7GXNrYnbZQEQ",  # Bon Gamerz
+    "UCckBCIvFC0zKOtyz3F7igRQ",  # Basgamer
+    "UCU0ou7IwjcwqZoChOHN85pQ",  # PIGCEL
+    "UCt-CLFyfQjadm6w7ZgDVjaQ",  # พี่หมีฟูจิ
+    "UCiHJOhRg-1bxHh7t_PLppNw",  # sonjokey
+    "UCpQAzHYc2q_rw2banp5uUzw",  # Moment Games
+    "UC705OZcYT8ysriJ93eiQVeg",  # NottO NBK
+    "UC4ytWAm10LjaeS53LpQfJOA",  # Kutcha Wants2playz
+    "UC562Vvs8XM-0FJ0C98c5Rnw",  # MORLHAM GAMER
+    "UCaPAgnV8Bh0upyayerSRGJg",  # The Xesitz
+    "UCbFBdunU9rTHIooyxLmi1MQ",  # PARIWAT
+    "UClns-mkWsQ4V7fNtZ-U-36w",  # HookHuukGaming
+    "UCe5H8YhDjg_441KjjS5qrAg",  # Garena Free Fire TH
+    "UCPryqo3M_mit4_A5gD99LtQ",  # Phillthesun
+    # Vlog / Lifestyle
+    "UC9NV3GWEacZDSSKK3oRtjcw",  # Fizart VLOG
+    "UCUHf9-Q9AtN_l4IWpuYzP4A",  # Butories
+    "UCghqIDNjD2B2CvgALoLxjkw",  # gap.bumseeker
+    "UCAlfop5P8slp0VewzUjj8GA",  # Jayy Crane
+    "UC2I1Ye8xVHLC-iQJXMLT-Gg",  # DEEN VLOG
+    "UComAntq7Iq5SxYHUJuJ6ekg",  # BACKPAEGER
+    "UCRo1j9THNtcvVa4vi5xCn0g",  # โลกของคนมีหนวด
+    "UCoJuMpfYKqCbvnd1DpUUJmg",  # พิมรี่พาย
+    # Entertainment
+    "UCWdWbuzG0YzPoo9rcWEW2Vg",  # HaGate Studio
+    "UCz5BjXkFFTuBsMx5MSRYwkA",  # Gapo Entertainment
+    # Music
+    "UCv9Xh8IDubBtFvoYfgCUbRQ",  # KRK Music
+    "UCoMkFgTybLK4UJYA_nLp1ZA",  # SONG RIDER
+    "UCtqBOzg93aIu8V-VgjRdWnA",  # SERNG MUSiC
+    "UC-vShcsYE730gWSbvsy44QQ",  # RISER MUSIC
+    "UCm-Cz0JEMr0_EIyWE7lvRdg",  # Thaidol Music
+    "UCQ9v04cmBdKAUbR4-SH6v2g",  # YOUNGOHM
+    "UCffA3uduAMx9YArnog42p2A",  # BLE PATUMRACH
+    "UCQHd_FYpAY4MJy7to9w4bKA",  # DIAMOND MQT
+    # Review / Tech
+    "UCbLxbHXO0pkWamgcJ6N9x1Q",  # Djung TV
+    "UCZ1xUPnSDPRtz76nGNBcaIA",  # Techcast
+    # Funny
+    "UCQtOWW-F-LQwrMh0hhBur5g",  # Funny Thailand
+    "UCjvmqQQIntIY-x_KPyHdwag",  # Tawan Funny
+    "UC7im0hCrsv7qODm75ZiazNw",  # FunnY เมืองไทย
+]
 OUTPUT_DIR = Path(__file__).parent.parent / "data" / "scraped" / "youtube"
 MAX_COMMENTS = 100
 MAX_VIDEOS = 50
@@ -117,10 +161,10 @@ def _main():
 
     with open(out_path, "w", encoding="utf-8") as f:
         for channel_id in THAI_CHANNEL_IDS:
-            print(f"Scraping channel: {channel_id}")
+            print(f"\nScraping channel: {channel_id}")
             video_ids = get_video_ids(youtube, channel_id)
             print(f"  Found {len(video_ids)} videos")
-            for vid in video_ids:
+            for vi, vid in enumerate(video_ids):
                 comments = get_comments(youtube, vid)
                 for c in comments:
                     pair = {
@@ -132,6 +176,9 @@ def _main():
                     f.write(json.dumps(pair, ensure_ascii=False) + "\n")
                     f.flush()
                     total += 1
+                if comments:
+                    preview = comments[0][:60] + ("..." if len(comments[0]) > 60 else "")
+                    print(f"  [{vi+1}/{len(video_ids)}] {len(comments)} comments — {preview}")
                 time.sleep(REQUEST_DELAY)
 
     print(f"Saved {total} comments to {out_path}")
