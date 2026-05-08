@@ -5,6 +5,7 @@ peft>=0.14.0
 bitsandbytes>=0.45.0
 accelerate>=1.0.0
 datasets>=3.0.0
+trl>=0.12.0
 
 # scraping
 requests>=2.31.0
