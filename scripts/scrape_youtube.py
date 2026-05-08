@@ -109,26 +109,59 @@ def get_video_ids(youtube, channel_id: str, max_videos: int = MAX_VIDEOS) -> lis
     return video_ids
 
 
-def get_comments(youtube, video_id: str) -> list[str]:
-    """Get top-level comments from a video."""
-    comments = []
+def _clean_comment(text: str) -> str:
+    """Strip HTML, normalize whitespace, return empty if too short."""
+    import html
+    text = html.unescape(text)
+    text = " ".join(text.split())
+    return text if len(text) >= 15 else ""
+
+
+def get_comment_chains(youtube, video_id: str) -> list[dict]:
+    """Extract reply chains as multi-turn conversations.
+
+    Returns list of {"messages": [{"role": ..., "content": ...}, ...]} dicts.
+    Each chain starts with the top comment as user, then alternates
+    assistant/user through the reply thread.
+    """
+    chains = []
     try:
         request = youtube.commentThreads().list(
-            part="snippet",
+            part="snippet,replies",
             videoId=video_id,
             maxResults=MAX_COMMENTS,
             order="relevance",
         )
         response = execute_with_retry(request, label=f"comments for video {video_id}")
         if response is None:
-            return comments
+            return chains
+
         for item in response.get("items", []):
-            text = item["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
-            if len(text) >= 15:
-                comments.append(text)
+            top = item["snippet"]["topLevelComment"]["snippet"]
+            top_text = _clean_comment(top["textDisplay"])
+            if not top_text:
+                continue
+
+            replies = item.get("replies", {}).get("comments", [])
+            if not replies:
+                # Single top comment, no replies — skip (can't make a pair)
+                continue
+
+            # Build multi-turn chain: top comment (user) -> reply1 (assistant) -> ...
+            messages = [{"role": "user", "content": top_text[:2048]}]
+            for i, reply in enumerate(replies):
+                reply_text = _clean_comment(reply["snippet"]["textDisplay"])
+                if not reply_text:
+                    continue
+                role = "assistant" if i % 2 == 0 else "user"
+                messages.append({"role": role, "content": reply_text[:2048]})
+
+            if len(messages) >= 2:  # at least one user + one assistant
+                chains.append({"messages": messages})
+
     except Exception as e:
         print(f"  Error getting comments for video {video_id}: {e}")
-    return comments
+    return chains
 
 
 def main():
@@ -165,20 +198,17 @@ def _main():
             video_ids = get_video_ids(youtube, channel_id)
             print(f"  Found {len(video_ids)} videos")
             for vi, vid in enumerate(video_ids):
-                comments = get_comments(youtube, vid)
-                for c in comments:
-                    pair = {
-                        "messages": [
-                            {"role": "user", "content": "พูดถึงเรื่องนี้หน่อย"},
-                            {"role": "assistant", "content": c[:2048]},
-                        ]
-                    }
-                    f.write(json.dumps(pair, ensure_ascii=False) + "\n")
+                chains = get_comment_chains(youtube, vid)
+                for chain in chains:
+                    f.write(json.dumps(chain, ensure_ascii=False) + "\n")
                     f.flush()
                     total += 1
-                if comments:
-                    preview = comments[0][:60] + ("..." if len(comments[0]) > 60 else "")
-                    print(f"  [{vi+1}/{len(video_ids)}] {len(comments)} comments — {preview}")
+                if chains:
+                    sample = chains[0]
+                    n_turns = len(sample["messages"])
+                    first = sample["messages"][0]["content"][:50]
+                    preview = first + ("..." if len(sample["messages"][0]["content"]) > 50 else "")
+                    print(f"  [{vi+1}/{len(video_ids)}] {len(chains)} chains ({n_turns}t) — {preview}")
                 time.sleep(REQUEST_DELAY)
 
     print(f"Saved {total} comments to {out_path}")
