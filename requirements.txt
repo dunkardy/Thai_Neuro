@@ -1,0 +1,23 @@
+# training (WSL only)
+unsloth>=2025.5
+transformers>=4.51.0
+peft>=0.14.0
+bitsandbytes>=0.45.0
+accelerate>=1.0.0
+datasets>=3.0.0
+
+# scraping
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+praw>=7.7.0
+google-api-python-client>=2.140.0
+
+# synthetic data
+anthropic>=0.40.0
+openai>=1.60.0
+
+# inference
+llama-cpp-python>=0.3.0
+
+# shared
+pythainlp>=5.0.0
