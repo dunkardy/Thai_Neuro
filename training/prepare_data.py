@@ -1,5 +1,8 @@
 """Merge scraped + synthetic data, clean, format, and split into train/val."""
+# Uses standalone paths rather than importing from training.config
+# so this script remains runnable without installing training dependencies.
 import json
+import random
 import re
 from pathlib import Path
 
@@ -100,6 +103,7 @@ def main():
     print(f"After deduplication: {len(unique)}")
 
     # Split
+    random.shuffle(unique)
     split_idx = int(len(unique) * TRAIN_RATIO)
     train = unique[:split_idx]
     val = unique[split_idx:]

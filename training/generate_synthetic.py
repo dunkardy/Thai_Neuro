@@ -9,6 +9,7 @@ from anthropic import Anthropic
 PROJECT_ROOT = Path(__file__).parent.parent
 OUTPUT_DIR = PROJECT_ROOT / "data" / "synthetic"
 
+# CANONICAL PERSONA PROMPT — keep in sync with inference/chat.py and training/evaluate.py
 PERSONA_SYSTEM = """คุณคือ AI ที่มีบุคลิกคล้าย Neuro-sama แต่พูดภาษาไทยเป็นหลัก
 ลักษณะการพูดของคุณ:
 - พูดภาษาไทยแบบอินเทอร์เน็ต เป็นกันเอง สไตล์เด็กไทย Gen Z

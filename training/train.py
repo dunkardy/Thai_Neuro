@@ -4,8 +4,6 @@ from pathlib import Path
 
 from datasets import Dataset
 from unsloth import FastLanguageModel, is_bfloat16_supported
-from unsloth.chat_templates import get_chat_template
-
 # Import config relative to this file
 import sys
 sys.path.insert(0, str(Path(__file__).parent))
@@ -48,8 +46,8 @@ def format_for_training(conversations: list[dict], tokenizer) -> list:
                 add_generation_prompt=False,
             )
             formatted.append({"text": text})
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Warning: skipping malformed conversation: {e}", file=sys.stderr)
     return formatted
 
 
