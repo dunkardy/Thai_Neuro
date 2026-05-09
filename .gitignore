@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Model artifacts
+adapters/
+*.gguf
+*.safetensors
+*.bin
+
+# Data (large files)
+data/scraped/
+data/synthetic/*
+data/processed/*
+# Keep .gitkeep in otherwise-ignored directories
+!data/synthetic/.gitkeep
+!data/processed/.gitkeep
+# Keep eval scenarios
+!data/eval/scenarios.jsonl
+
+# Environment
+.env
+*.env
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Superpowers
+.superpowers/
+
+# Claude local settings (keep .claude/ directory tracked)
+.claude/settings.local.json

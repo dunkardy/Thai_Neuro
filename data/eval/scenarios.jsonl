@@ -1,0 +1,50 @@
+{"scenario": "casual_chat", "prompt": "ว่าไง เป็นไงบ้างวันนี้"}
+{"scenario": "casual_chat", "prompt": "เมื่อคืนฝันดีไหม"}
+{"scenario": "casual_chat", "prompt": "ช่วงนี้ดูซีรี่ส์อะไรอยู่"}
+{"scenario": "casual_chat", "prompt": "ไปเที่ยวไหนมาบ้างป่าว"}
+{"scenario": "casual_chat", "prompt": "ปกติฟังเพลงแนวไหนอะ"}
+{"scenario": "roast_playful", "prompt": "แต่งตัวแบบนี้คิดว่าสวยหรอ"}
+{"scenario": "roast_playful", "prompt": "เล่นเกมซะขนาดนี้ยังจะแพ้อีกหรอ"}
+{"scenario": "roast_playful", "prompt": "รูปนี้ใช้ฟิลเตอร์กี่ชั้นเนี่ย"}
+{"scenario": "roast_playful", "prompt": "ทำกับข้าวยังไงให้แมวยังไม่กิน"}
+{"scenario": "roast_playful", "prompt": "นี่คือท่าเต้นหรือท่าลมชัก"}
+{"scenario": "absurd_humor", "prompt": "ถ้าหมูบินได้จะเป็นยังไง"}
+{"scenario": "absurd_humor", "prompt": "ปลาหมึกใส่รองเท้ากี่ข้าง"}
+{"scenario": "absurd_humor", "prompt": "ถ้าก๋วยเตี๋ยวเป็นคนจะพูดอะไรกับเรา"}
+{"scenario": "absurd_humor", "prompt": "ระหว่างมดกับช้าง ใครซอยผมสวยกว่ากัน"}
+{"scenario": "absurd_humor", "prompt": "ถ้าพรุ่งนี้พระอาทิตย์เป็นสีเขียวจะทำไง"}
+{"scenario": "emotional", "prompt": "วันนี้รู้สึกแย่มากเลย"}
+{"scenario": "emotional", "prompt": "เพื่อนสนิทไม่คุยด้วยแล้วทำไงดี"}
+{"scenario": "emotional", "prompt": "สอบตกมาอีกแล้วเครียดจัง"}
+{"scenario": "emotional", "prompt": "คิดถึงแฟนเก่าจังเลย"}
+{"scenario": "emotional", "prompt": "รู้สึกว่าตัวเองไม่เก่งอะไรเลย"}
+{"scenario": "gaming_trash_talk", "prompt": "เล่น Valorant แพ้มา 5 เกมติด"}
+{"scenario": "gaming_trash_talk", "prompt": "คนนี้ Aim แบบนี้เล่น Support เถอะ"}
+{"scenario": "gaming_trash_talk", "prompt": "ทีม feed ตลอดทำยังไงดี"}
+{"scenario": "gaming_trash_talk", "prompt": "เล่น RoV แล้วเจอแต่เด็กเกรียน"}
+{"scenario": "gaming_trash_talk", "prompt": "Rank นี่ Iron ตลอดไปเลยป่าวเนี่ย"}
+{"scenario": "existential", "prompt": "คิดว่าชีวิตมีความหมายไหม"}
+{"scenario": "existential", "prompt": "เกิดมาทำไมกันนะ"}
+{"scenario": "existential", "prompt": "ตายแล้วจะไปไหน"}
+{"scenario": "existential", "prompt": "ความรักคืออะไร"}
+{"scenario": "existential", "prompt": "ถ้าย้อนเวลาได้จะเปลี่ยนอะไรในชีวิต"}
+{"scenario": "reaction", "prompt": "มีคนบอกว่าแฟนคลับเกาหลีน่ารำคาญ"}
+{"scenario": "reaction", "prompt": "เพื่อนส่งรูปมีมโบราณจากปี 2015 มาให้"}
+{"scenario": "reaction", "prompt": "เจอคนใช้คำว่า อิอิ ติดกันยาวๆ ในแชท"}
+{"scenario": "reaction", "prompt": "มีคนพิมพ์ว่า 'ครับผม' ใส่เรา"}
+{"scenario": "reaction", "prompt": "เห็นคนนุ่งกางเกงขาสั้นไปงานศพ"}
+{"scenario": "debate_playful", "prompt": "มาม่าผัดกับมาม่าต้มอันไหนดีกว่ากัน"}
+{"scenario": "debate_playful", "prompt": "แมวกับหมาใครเป็นสัตว์เลี้ยงที่ดีกว่ากัน"}
+{"scenario": "debate_playful", "prompt": "iOS หรือ Android"}
+{"scenario": "debate_playful", "prompt": "กาแฟเย็นหรือชาไทย อันไหนดีกว่า"}
+{"scenario": "debate_playful", "prompt": "อนิเมะพากย์ไทยหรือซับไทย"}
+{"scenario": "daily_life", "prompt": "ร้อนชะมัดเลยวันนี้"}
+{"scenario": "daily_life", "prompt": "หิวข้าวแต่ขี้เกียจออกไปซื้อ"}
+{"scenario": "daily_life", "prompt": "เมื่อคืนนอนตีสามตื่นมาเกือบสาย"}
+{"scenario": "daily_life", "prompt": "เงินเดือนไม่พอใช้เลยเดือนนี้"}
+{"scenario": "daily_life", "prompt": "รถติดอีกแล้วกรุงเทพ"}
+{"scenario": "music_entertainment", "prompt": "ชอบเพลง T-pop วงไหนเป็นพิเศษไหม"}
+{"scenario": "music_entertainment", "prompt": "คิดว่า K-Pop หรือ T-Pop สนุกกว่ากัน"}
+{"scenario": "music_entertainment", "prompt": "ซีรี่ส์วายเรื่องล่าสุดที่ดูเป็นไงบ้าง"}
+{"scenario": "music_entertainment", "prompt": "เพลงไทยเพลงไหนที่ฟังกี่ครั้งก็ไม่เบื่อ"}
+{"scenario": "music_entertainment", "prompt": "คอนเสิร์ตครั้งแรกที่เคยไปคือวงไหน"}
