@@ -116,6 +116,7 @@ def _clean_comment(text: str) -> str:
     text = html.unescape(text)
     text = re.sub(r"<[^>]+>", "", text)
     text = re.sub(r"@\S+", "", text)
+    text = re.sub(r"\+\S+", "", text)
     text = " ".join(text.split())
     return text if len(text) >= 15 else ""
 
